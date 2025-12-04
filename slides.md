@@ -5,7 +5,7 @@ theme: seriph
 # like them? see https://unsplash.com/collections/94734566/slidev
 background: https://images.unsplash.com/photo-1549716679-95380658d5cd?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OTh8fGRlc2lnbnxlbnwwfHwwfHx8Mg%3D%3D
 # some information about your slides (markdown enabled)
-title: Projection de contenu avec Angular
+title: (Re)Découvrir la Projection de Contenu
 # https://sli.dev/features/drawing
 drawings:
   persist: false
@@ -22,7 +22,7 @@ h3 {
 }
 </style>
 
-# Projection de contenu avec Angular
+# (Re)Découvrir la Projection de Contenu
 
 L'art de concevoir des composants UI customisés, réutilisables et flexibles
 
@@ -33,7 +33,9 @@ L'art de concevoir des composants UI customisés, réutilisables et flexibles
 </div>
 
 <!--
-Aujourd'hui, nous allons explorer une fonctionnalité d'Angular souvent sous-exploitée mais extrêmement puissante : la projection de contenu. À travers une étude de cas métier réaliste, nous verrons comment cette technique peut transformer notre approche de conception de composants.
+Fonctionnalité d'Angular sous-exploitée mais extrêmement puissante
+étude de cas métier réaliste, 
+transformer notre approche de conception de composants.
 -->
 
 ---
@@ -42,7 +44,7 @@ transition: fade-out
 
 # Au programme
 
-<v-clicks>
+<v-click>
 
 1. **Contexte & Fondations**
 2. **Évolution progressive**
@@ -51,7 +53,7 @@ transition: fade-out
 5. **Comparaison & Analyse**
 6. **Patterns avancés**
 
-</v-clicks>
+</v-click>
 
 <div class="abs-br m-6 text-sm">
   <carbon:information class="inline"/> ~30 minutes
@@ -85,22 +87,23 @@ background: /img/balazs-ketyi-_x335IZXxfc-unsplash.jpg
 
 Equipes Angular cross-produits avec un Design System
 
-**Besoin identifié :**
 
-<v-clicks>
+<v-click>
+
+**Besoin identifié :**
 
 - Composants UI customisés
 - Réutilisables dans plusieurs features/domaines métier
 - Maintenables à long terme
 - Évolutifs selon les besoins métier
 
-</v-clicks>
+</v-click>
 
 
 
 <!--
-Contexte entreprise : plusieurs équipes front Angular travaillent sur différents domaines métier (finance, RH, logistique, etc.).
-Chaque équipe avait ses propres composants UI, ce qui créait une expérience utilisateur fragmentée et incohérente.
+Différents domaines métier (finance, RH, logistique, etc.).
+Chaque équipe avait ses propres composants UI, -> expérience utilisateur fragmentée et incohérente.
 
 L'entreprise a décidé d'homogénéiser l'interface utilisateur en créant un Design System centralisé avec des composants UI customisés et identiques pour tous les domaines.
 
@@ -142,14 +145,8 @@ Contraintes détaillées :
 - **Flexibilité** :
   - Anticiper les besoins sans sur-engineer
   - Permettre la customisation sans tout exposer en inputs
-  - Trouver le bon équilibre rigidité/flexibilité
-- **Performance** :
-  - Bundle size optimisé (tree-shaking, lazy loading)
-  - Change detection maîtrisée (OnPush strategy)
-  - Pas de sur-abstraction qui dégrade les perfs
 - **Documentation** :
   - Examples interactifs (Storybook, Stackblitz)
-  - Guidelines de contribution claires
   - Migration guides pour les breaking changes
 -->
 
@@ -231,25 +228,26 @@ class: text-center
 <div class="flex flex-col gap-4">
 <div v-click="1">
 
-#### Solution : Template
+#### Code TypeScript
 
-```html
-    <button (click)="clicked.emit()">
-      <span class="card-button__label">
-        {{ label() }}
-      </span>
-    </button>
+```typescript
+  label = input.required<string>();
+  clicked = output<void>();
 ```
 
 </div>
 
 <div v-click="2">
 
-#### Code TypeScript
+#### Solution : Template
 
-```typescript
-  label = input.required<string>();
-  clicked = output<void>();
+```html
+    <button class="button__container"
+      (click)="clicked.emit()">
+      <span class="button__label">
+        {{ label() }}
+      </span>
+    </button>
 ```
 
 </div>
@@ -291,9 +289,11 @@ Premier use case : très simple, une API avec un seul input obligatoire. Tout va
 
 ```typescript
   label = input.required<string>();
-  icon = input<string>();      // 🆕
-  endIcon = input<string>();   // 🆕
-  inline = input<boolean>();   // 🆕
+  icon = input<string | undefined>();   // 🆕
+  endIcon = input<string | undefined>();// 🆕
+  inline = input<boolean, boolean | string>(false,
+    {transform: booleanAttribute}
+  );   // 🆕
   clicked = output<void>();
 
 ```
@@ -315,7 +315,7 @@ Premier use case : très simple, une API avec un seul input obligatoire. Tout va
 </div>
 </div>
 
-<div v-click="3" class="bg-yellow-50 flex flex-row flex-nowrap gap-24 mx-auto col-span-2 mt-4 p-4 rounded text-sm text-center">
+<div v-click="3" class="bg-yellow-50 flex flex-row flex-nowrap gap-24 mx-auto col-span-2 p-4 rounded text-sm text-center">
 
 <p><b>3 nouveaux inputs</b></p>
 <p><b>Logique conditionnelle complexe</b></p>
@@ -326,7 +326,8 @@ Premier use case : très simple, une API avec un seul input obligatoire. Tout va
 </div>
 
 <!--
-Première évolution : on ajoute des icônes. L'API commence à grossir, et surtout, regardez le template : des @if imbriqués pour gérer les différents cas. La complexité augmente.
+Première évolution : on ajoute des icônes. L'API commence à grossir.
+Template complexité augmente.
 -->
 
 ---
@@ -335,7 +336,7 @@ Première évolution : on ajoute des icônes. L'API commence à grossir, et surt
 
 <div class="text-sm">
 
-```typescript {all|2-2,5-5,13-13,20-20|6-8,14-18|10-12|all}
+```typescript {all|2-2,5-5,13-13,20-20|6-8,14-18|10-12}
     <button type="button" class="card-button" 
       [class.card-button--inline]="inline()"
       [disabled]="disabled()" (click)="onClick()">
@@ -362,8 +363,10 @@ Première évolution : on ajoute des icônes. L'API commence à grossir, et surt
 </div>
 
 <!--
-Regardez ce template : on a maintenant 3 blocs conditionnels juste pour gérer l'affichage des icônes. Et ce n'est que le deuxième use case !
-🚨 **Premier signal d'alerte** : La logique conditionnelle se complexifie. Chaque nouveau besoin va ajouter des conditions supplémentaires.
+3 blocs conditionnels juste pour gérer l'affichage des icônes. 
+Et ce n'est que le deuxième use case !
+🚨 **Premier signal d'alerte** : 
+La logique conditionnelle se complexifie. Chaque nouveau besoin va ajouter des conditions supplémentaires.
 -->
 
 
@@ -399,20 +402,19 @@ graph LR
 
 <v-clicks>
 
-# Les 5 problèmes majeurs
+# Les 4 problèmes majeurs
 </v-clicks>
 <div class="grid grid-cols-2 gap-4">
 <v-clicks>
 
 #### 1. Explosion du nombre d'inputs
 
-#### 2. Rigidité de la structure HTML
+#### 2. Impossible d'anticiper tous les cas
 
 #### 3. Maintenance cauchemardesque
 
 #### 4. Complexité des tests
 
-#### 5. Impossible d'anticiper tous les cas
 </v-clicks>
 </div>
 
@@ -428,6 +430,7 @@ graph LR
 
 - Le composant décide de **toute** la structure interne
 - Impossible d'ajouter du contenu non prévu
+- On ne peut pas prévoir tous les besoins futurs
 - Exemple : ajouter un badge, un tooltip, un sous-titre ?
 
 ### 3. 🔄 Maintenance cauchemardesque
@@ -442,12 +445,10 @@ graph LR
 - Tests exponentiels : 6 inputs booléens = 64 combinaisons !
 - Mock de plus en plus complexes
 
-### 5. 🔮 Impossible d'anticiper tous les cas
 
-- On ne peut pas prévoir tous les besoins futurs
-- "Just add another prop" n'est pas une stratégie viable
-
-Ces 5 problèmes sont interconnectés. Le vrai souci : on essaie de tout contrôler depuis le composant. C'est l'inverse du principe d'inversion de contrôle.
+Problèmes sont interconnectés. 
+Le vrai souci : on essaie de tout contrôler depuis le composant.
+Partage de responsabilité
 
 -->
 
@@ -492,7 +493,7 @@ graph TD
 
 
 <!--
-C'est le cœur du problème : on a inversé la responsabilité. Le composant devrait être un conteneur générique, pas un chef d'orchestre qui contrôle tout.
+C'est le cœur du problème : on a inversé la responsabilité. Le composant devrait être un conteneur générique.
 
 Le **composant enfant** décide de tout :
 - Structure HTML
@@ -506,7 +507,7 @@ Le **parent** décide du contenu :
 - Dans quel ordre
 - Quel contenu
 
-💡 **Il faut inverser le contrôle** : le parent doit pouvoir injecter du contenu arbitraire dans le composant
+💡 **Il faut inverser le contrôle** : le parent doit pouvoir injecter du contenu  dans le composant
 
 -->
 
@@ -556,22 +557,21 @@ class: text-center
 }
 </style>
 
-<div v-click="3">
+<div v-click="4">
 
 
 - Disponible depuis **Angular 2** (2016)
-- Inspiré des Web Components (`<slot>`)
-- Fait partie du core framework
+- Inspiré des Web Components `<slot>`
 
 </div>
 
 </div>
 
-<div v-click="2">
+<div>
 
 ### Syntaxe de base
 
-```typescript
+```typescript {none|5|all}
 @Component({
   selector: 'custom-card',
   template: `
@@ -589,6 +589,7 @@ export class CustomCard {/* ... */}
 
 <!--
 Content Projection : un concept simple mais puissant. Au lieu de passer du contenu via des inputs, on l'injecte directement dans le template du composant.
+Comme pour le HTML
 -->
 
 ---
@@ -599,7 +600,7 @@ Content Projection : un concept simple mais puissant. Au lieu de passer du conte
 
 <div>
 
-```typescript
+```typescript {6|all}
 @Component({
   selector: 'app-custom-button',
   template: `
@@ -628,27 +629,30 @@ export class CustomButton {
 
 <div>
 
-```typescript {none|1-4|6-10|12-21|all}
+```typescript {none|1-4|6-12|14-24}
 // Cas 1 : Texte simple
 <app-custom-button (clicked)="onSave()">
-  <span class="card-button__label">Enregistrer</span>
+  Enregistrer
 </app-custom-button>
 
 // Cas 2 : Avec icône Material
 <app-custom-button (clicked)="onSave()">
-  <mat-icon fontIcon="save"></mat-icon>
-  <span class="card-button__label">Enregistrer</span>
+  <div class="card-button inline">
+    <mat-icon fontIcon="save" />
+    Enregistrer
+  </div>
 </app-custom-button>
 
 // Cas 3 : Structure complexe
 <app-custom-button (clicked)="onSave()">
-  <div class="content">
-    <span class="card-button__label">
+  <div class="card-button inline">
+    <app-icon name="save" />
+    <app-label 
+      tooltip="Permet de sauvegarder votre travail">
       Enregistrer
-    </span>
-    <span class="badge">Nouveau</span>
+    </app-label>
+    <app-badge>New</app-badge>
   </div>
-  <app-icon>save</app-icon>
 </app-custom-button>
 ```
 
@@ -762,7 +766,7 @@ Composant avec logique métier précise qui ne variera pas
 
 **API simple et stable**
 
-2-3 inputs maximum, cas d'usage bien définis
+2-3 inputs maximum, cas d'usage bien définis et stable
 
 </div>
 
@@ -781,6 +785,14 @@ Composant avec logique métier précise qui ne variera pas
 **Composants UI génériques**
 
 Design system, bibliothèque de composants réutilisables
+
+</div>
+
+<div class="p-2 bg-green-50 rounded">
+
+**Formattage divers**
+
+Plusieurs transformations possibles, utilisation pipe (DatePipe, CurrencyPipe, ...)
 
 </div>
 
@@ -820,21 +832,45 @@ class: text-center
   variant = input<ButtonVariant>('primary');
   size = input<ButtonSize>('medium');
   color = input<ButtonColor>('default');
+
+  buttonClasses = computed(() =>
+    `btn btn--${this.variant()} btn--${this.size()}`
+  );
 ```
+
 </div>
-<div v-click>
+
+<div v-click="3">
 
 ### Utilisation
 
 ```html
 <app-custom-button variant="secondary" size="small">
-  <app-icon name="edit"></app-icon>
-  <span>Modifier</span>
+  <app-icon name="edit" />
+  Modifier
 </app-custom-button>
 ```
 </div>
-</div>
 
+</div>
+<div  v-click="2">
+
+### Template
+```html
+<button [class]="buttonClasses()">
+  <ng-content />
+</button>
+```
+
+### CSS
+```scss
+.btn { display: inline-flex; ... }
+.btn--primary { background: ... }
+.btn--secondary { background: ... }
+.btn--small { padding: ... }
+.btn--medium { padding: ... }
+```
+</div>
 </div>
 <!--
 Combiner input pour la configuration et projection pour le contenu
