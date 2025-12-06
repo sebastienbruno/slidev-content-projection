@@ -790,9 +790,9 @@ Design system, bibliothèque de composants réutilisables
 
 <div class="p-2 bg-green-50 rounded">
 
-**Formattage divers**
+**Changements fréquents**
 
-Plusieurs transformations possibles, utilisation pipe (DatePipe, CurrencyPipe, ...)
+Besoins changeant régulièrement, besoins fort en flexibilité
 
 </div>
 
@@ -881,55 +881,141 @@ Le pattern hybride : utiliser les inputs pour la configuration visuelle simple, 
 layout: default
 ---
 
-# Pattern avancé : Multi-slot Projection
+# Multi-slot Projection : Header Card
 
-<div class="grid grid-cols-2 gap-6">
+<div class="grid grid-cols-2 gap-8 mt-4">
 
-<div>
-
-### Composant
-
-```typescript
-@Component({
-  template: `
-    <div class="card">
-      <div class="header">
-        <ng-content select="[slot='header']" />
+<div v-click class="multi-slot-demo relative h-64">
+  <!-- Container Header avec les 3 slots -->
+  <div class="header-container absolute right-0 top-8 w-72 h-20 rounded-3xl border-1 border-gray-400 flex items-center gap-3 px-4">
+    <div class="slot-avatar w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-[10px] text-green-400">
+      avatar
+    </div>
+    <div class="flex flex-col gap-1">
+      <div class="slot-title bg-purple-600 px-2 py-1 rounded text-[10px] text-green-400 w-24">
+        title
       </div>
-      <div class="body">
-        <ng-content />
-      </div>
-      <div class="footer">
-        <ng-content select="[slot='footer']" />
+      <div class="slot-subtitle bg-indigo-600 px-2 py-1 rounded text-[10px] text-green-400 w-20">
+        subtitle
       </div>
     </div>
-  `
-})
-```
+    <div class="slot-default bg-gray-500 px-2 py-1 rounded text-[10px] text-green-400 w-12 h-12 flex items-center justify-center">
+      *
+    </div>
+  </div>
 
+  <!-- Éléments à projeter -->
+  <img src="/img/shiba1.jpg" class="avatar-item absolute top-8 left-0 w-12 h-12 rounded-full border-2 border-dashed border-blue-400 animate-project-avatar object-cover" />
+
+  <div class="title-item absolute top-24 left-0 px-2 py-1 rounded border-2 border-dashed border-purple-400 bg-white text-sm font-bold animate-project-title">
+    Shiba Inu
+  </div>
+
+  <div class="subtitle-item absolute top-36 left-0 px-2 py-1 rounded border-2 border-dashed border-indigo-400 bg-white text-xs text-gray-500 animate-project-subtitle">
+    Dog Breed
+  </div>
+
+  <div class="default-item absolute top-48 left-0 px-2 py-1 rounded border-2 border-dashed border-gray-400 bg-white text-xs text-gray-600 animate-project-default">
+    ⭐ Featured
+  </div>
 </div>
 
-<div>
+<div v-click>
 
 ### Utilisation
 
 ```html
-<app-card>
-  <h2 slot="header">Titre</h2>
-  <p>Contenu principal</p>
-  <button slot="footer">Action</button>
-</app-card>
+<app-card-header>
+  <img slot="avatar" src="shiba.jpg" />
+  <h3 slot="title">Shiba Inu</h3>
+  <p slot="subtitle">Dog Breed</p>
+  <span>⭐ Featured</span>
+</app-card-header>
 ```
 
-<div class="mt-6 p-4 bg-blue-50 rounded text-sm">
-
-- Plusieurs zones de projection nommées
-- Le slot par défaut (`<ng-content />`) capture le reste
-- Permet des layouts complexes (header/body/footer)
-
 </div>
 
 </div>
+
+<style>
+@keyframes projectAvatar {
+  0% { left: 0; border-color: rgb(96 165 250); }
+  100% { left: calc(100% - 17rem); top: 3rem; border-color: transparent; }
+}
+@keyframes projectTitle {
+  0% { left: 0; border-color: rgb(192 132 252); }
+  100% { left: calc(100% - 13.9rem); top: 2.75rem; border-color: transparent; color: #1e293b; background: transparent; }
+}
+@keyframes projectSubtitle {
+  0% { left: 0; border-color: rgb(129 140 248); }
+  100% { left: calc(100% - 13.9rem); top: 4.22rem; border-color: transparent; color: rgb(156 163 175); background: transparent; }
+}
+@keyframes projectDefault {
+  0% { left: 0; border-color: rgb(156 163 175); }
+  100% { left: calc(100% - 7rem); top: 3rem; border-color: transparent; color: rgb(75 85 99); background: transparent; }
+}
+@keyframes hideSlotText {
+  100% { color: transparent; background: transparent; }
+}
+
+:not(.slidev-vclick-hidden).slidev-vclick-target .animate-project-avatar {
+  animation: projectAvatar 1.5s ease-in-out 1s forwards;
+}
+:not(.slidev-vclick-hidden).slidev-vclick-target .animate-project-title {
+  animation: projectTitle 1.5s ease-in-out 2.5s forwards;
+}
+:not(.slidev-vclick-hidden).slidev-vclick-target .animate-project-subtitle {
+  animation: projectSubtitle 1.5s ease-in-out 4s forwards;
+}
+:not(.slidev-vclick-hidden).slidev-vclick-target .animate-project-default {
+  animation: projectDefault 1.5s ease-in-out 5.5s forwards;
+}
+:not(.slidev-vclick-hidden).slidev-vclick-target .slot-avatar {
+  animation: hideSlotText 0.5s ease-in-out 2s forwards;
+}
+:not(.slidev-vclick-hidden).slidev-vclick-target .slot-title {
+  animation: hideSlotText 0.5s ease-in-out 3.5s forwards;
+}
+:not(.slidev-vclick-hidden).slidev-vclick-target .slot-subtitle {
+  animation: hideSlotText 0.5s ease-in-out 5s forwards;
+}
+:not(.slidev-vclick-hidden).slidev-vclick-target .slot-default {
+  animation: hideSlotText 0.5s ease-in-out 6.5s forwards;
+}
+</style>
+
+<!--
+Animation montrant la projection multi-slot dans un header de card :
+- L'avatar se projette vers son slot dédié
+- Le titre se projette vers son slot
+- Le sous-titre se projette vers son slot
+Chaque élément a sa propre zone de projection nommée.
+-->
+
+---
+layout: default
+---
+
+# Pattern avancé : Multi-slot Projection
+
+<div>
+
+### Composant Header
+
+```typescript
+@Component({
+  template: `
+    <div class="card-header">
+      <ng-content select="[slot='avatar'], app-card-avatar, [appCardAvatar], [app-card-avatar]" />
+      <div class="card-header__text">
+        <ng-content select="[slot='title'], app-card-title, [appCardTitle], [app-card-title]" />
+        <ng-content select="[slot='subtitle'], app-card-subtitle, [appCardSubtitle], [app-card-subtitle]" />
+      </div>
+      <ng-content />
+    </div>
+  `
+})
+```
 
 </div>
 
