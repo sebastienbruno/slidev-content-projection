@@ -881,7 +881,7 @@ Le pattern hybride : utiliser les inputs pour la configuration visuelle simple, 
 layout: default
 ---
 
-# Multi-slot Projection : Header Card
+# Pattern avancé : Multi-slot Projection
 
 <div class="grid grid-cols-2 gap-8 mt-4">
 
