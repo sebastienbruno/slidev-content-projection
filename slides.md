@@ -85,10 +85,7 @@ background: /img/balazs-ketyi-_x335IZXxfc-unsplash.jpg
 
 ## La situation
 
-Equipes Angular cross-produits avec un Design System
-
-
-<v-click>
+Equipes Angular cross-produits
 
 **Besoin identifié :**
 
@@ -97,23 +94,34 @@ Equipes Angular cross-produits avec un Design System
 - Maintenables à long terme
 - Évolutifs selon les besoins métier
 
+<v-click>
+
+## Solution
+
+**--> Design System**
+
 </v-click>
 
 
-
 <!--
-Différents domaines métier (finance, RH, logistique, etc.).
-Chaque équipe avait ses propres composants UI, -> expérience utilisateur fragmentée et incohérente.
+Différents domaines métier (finance, RH, logistique, etc.). UX fragmentée et incohérente.
 
-L'entreprise a décidé d'homogénéiser l'interface utilisateur en créant un Design System centralisé avec des composants UI customisés et identiques pour tous les domaines.
+Homogénisation UX avec Design System
 
-Défi : Comment concevoir ces composants partagés pour qu'ils :
-- Répondent aux besoins spécifiques de chaque domaine métier
-- Restent maintenables malgré les demandes divergentes
-- Évitent de devenir des monolithes rigides avec des dizaines d'inputs
-- Permettent l'innovation sans casser l'existant
+Avantages détaillés :
+- **Cohérence visuelle** : Look & feel / Charte
+- **Productivité** : Duplication / TTM / Focus Metier
+- **Maintenance** : Impact auto / Propagation correction bug / Evol central
+- **Onboarding** : opérationnels plus vite / Pattern & Bonne pratique / moins Decisions
+- **Centralisation des tests** : TU Une seule fois / Garantie all consumers, réduction dette
 
-Un Design System n'est pas qu'une bibliothèque de composants : c'est un contrat entre designers et développeurs. L'API de nos composants doit être pensée avec soin.
+Contraintes détaillées :
+- **API stable** : Versioning sémantique, migration, Rétro-compatibilité entre versions, Breaking changes documentés
+- **Flexibilité** : Anticiper, Customisation
+- **Documentation** : Storybook, Migration guides
+
+
+DETAILS CI-DESSOUS
 
 Avantages détaillés :
 - **Cohérence visuelle** :
@@ -397,15 +405,9 @@ graph LR
 
 </div>
 
-
-
-
-<v-clicks>
-
 # Les 4 problèmes majeurs
-</v-clicks>
+
 <div class="grid grid-cols-2 gap-4">
-<v-clicks>
 
 #### 1. Explosion du nombre d'inputs
 
@@ -415,32 +417,27 @@ graph LR
 
 #### 4. Complexité des tests
 
-</v-clicks>
 </div>
 
 <!--
 
-### 1. 💥 Explosion des inputs (Prop Drilling)
-
+1. 💥 Explosion des inputs (Prop Drilling)
 - Chaque nouveau besoin = nouveau @Input
 - API qui devient incompréhensible
 - Difficulté à savoir quels inputs sont requis
 
-### 2. 🔒 Rigidité de la structure HTML
-
+2. 🔒 Rigidité de la structure HTML
 - Le composant décide de **toute** la structure interne
 - Impossible d'ajouter du contenu non prévu
 - On ne peut pas prévoir tous les besoins futurs
 - Exemple : ajouter un badge, un tooltip, un sous-titre ?
 
-### 3. 🔄 Maintenance cauchemardesque
-
+3. 🔄 Maintenance cauchemardesque
 - Chaque modification impacte tous les consumers
 - Tests à refaire à chaque évolution
 - Risque de régression élevé
 
-### 4. 🧪 Complexité des tests
-
+4. 🧪 Complexité des tests
 - Tester toutes les combinaisons de inputs
 - Tests exponentiels : 6 inputs booléens = 64 combinaisons !
 - Mock de plus en plus complexes
@@ -494,18 +491,6 @@ graph TD
 
 <!--
 C'est le cœur du problème : on a inversé la responsabilité. Le composant devrait être un conteneur générique.
-
-Le **composant enfant** décide de tout :
-- Structure HTML
-- Ordre des éléments
-- Contenu exact
-- Style des enfants
-
-Le **parent** décide du contenu :
-- Quelle structure HTML
-- Quels éléments afficher
-- Dans quel ordre
-- Quel contenu
 
 💡 **Il faut inverser le contrôle** : le parent doit pouvoir injecter du contenu  dans le composant
 
@@ -616,8 +601,7 @@ export class CustomButton {
   clicked = output<void>();
 }
 ```
-
-<div class="mt-4 p-4 bg-green-50 rounded text-sm flex flex-col">
+<div v-click="1" class="mt-4 p-4 bg-green-50 rounded text-sm flex flex-col">
 
 ##### API minimaliste
 ##### Template ultra simple
@@ -883,7 +867,7 @@ layout: default
 
 # Pattern avancé : Multi-slot Projection
 
-<div class="grid grid-cols-2 gap-8 mt-4">
+<div class="items-center justify-center w-[60%] mx-auto">
 
 <div v-click class="multi-slot-demo relative h-64">
   <!-- Container Header avec les 3 slots -->
@@ -919,21 +903,14 @@ layout: default
     ⭐ Featured
   </div>
 </div>
-
-<div v-click>
-
-### Utilisation
-
+<v-click>
 ```html
-<app-card-header>
-  <img slot="avatar" src="shiba.jpg" />
-  <h3 slot="title">Shiba Inu</h3>
-  <p slot="subtitle">Dog Breed</p>
-  <span>⭐ Featured</span>
-</app-card-header>
+<ng-content 
+    select="[attributeSelector], tag-name-selector, .class-selector"
+/>
 ```
+</v-click>
 
-</div>
 
 </div>
 
@@ -995,15 +972,11 @@ Chaque élément a sa propre zone de projection nommée.
 ---
 layout: default
 ---
-
-# Pattern avancé : Multi-slot Projection
-
 <div>
 
 ### Composant Header
 
 ```typescript
-@Component({
   template: `
     <div class="card-header">
       <ng-content select="[slot='avatar'], app-card-avatar, [appCardAvatar], [app-card-avatar]" />
@@ -1012,10 +985,33 @@ layout: default
         <ng-content select="[slot='subtitle'], app-card-subtitle, [appCardSubtitle], [app-card-subtitle]" />
       </div>
       <ng-content />
-    </div>
-  `
-})
+    </div>`
 ```
+
+### Utilisation
+<div class="flex flex-row justify-between gap-6">
+<div>
+```html
+<app-card-header>
+  <img slot="avatar" src="shiba.jpg" />
+  <h3 slot="title">Shiba Inu</h3>
+  <p slot="subtitle">Dog Breed</p>
+  <span>⭐ Featured</span>
+</app-card-header>
+```
+</div>
+<div>
+
+```html
+<app-card-header>
+  <app-card-avatar src="shiba.jpg" />
+  <app-card-title>Shiba Inu</app-card-title>
+  <app-card-subtitle>Dog Breed</app-card-subtitle>
+  <span>⭐ Featured</span>
+</app-card-header>
+```
+</div>
+</div>
 
 </div>
 
