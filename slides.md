@@ -381,7 +381,7 @@ class: text-center
 
 # Partie 3
 
-## Les Limites de l'approche de l'input
+## Les limites de l'approche avec input
 
 ---
 
@@ -459,7 +459,7 @@ Partage de responsabilité
 ```mermaid
 graph TD
     A[Parent Component] -->|Inputs| B[Custom Button]
-    B -->|Décide structure| C[HTML final]
+    B -->|Structure/Style/Contenu| C[HTML final]
 
     style B fill:#fc8181,color:#000
 ```
@@ -662,7 +662,7 @@ class: text-center
 | Critère | input Approach | Content Projection |
 |---------|----------------|-------------------|
 | **Complexité API** | 🔴 Croît exponentiellement | 🟢 Stable et minimaliste |
-| **Flexibilité** | 🔴 Limitée aux inputs définies | 🟢 Presque illimitée |
+| **Flexibilité** | 🔴 Limitée aux inputs définis | 🟢 Presque illimitée |
 | **Structure HTML** | 🔴 Figée dans le composant | 🟢 Décidée par le parent |
 | **Maintenance** | 🔴 Chaque besoin = modification | 🟢 Composant stable |
 | **Tests** | 🔴 Combinaisons exponentielles | 🟢 Tests simples et isolés |
@@ -746,7 +746,7 @@ Composant avec logique métier précise qui ne variera pas
 
 **API simple et stable**
 
-2-3 inputs maximum, cas d'usage bien définis et stable
+2-3 inputs maximum, cas d'usage bien définis et stables
 
 </div>
 
@@ -772,7 +772,7 @@ Design system, bibliothèque de composants réutilisables
 
 **Changements fréquents**
 
-Besoins changeant régulièrement, besoins fort en flexibilité
+Besoins changeant régulièrement, besoin fort de flexibilité
 
 </div>
 
@@ -807,7 +807,7 @@ class: text-center
 <div>
 <div v-click>
 
-### Composant inputs
+### Composant
 ```typescript
   variant = input<ButtonVariant>('primary');
   size = input<ButtonSize>('medium');
@@ -1027,7 +1027,7 @@ layout: default
 - Documentation officielle Angular.dev
 - Projection de contenu conditionnelle
 - Projection de contenu par défaut (Fallback) 
-- Alasing avec ngProjectAs
+- Aliasing avec ngProjectAs
 - Re-projection
 
 <v-click>
@@ -1040,6 +1040,17 @@ layout: default
 <!--
 ng-template avec context : permet de passer des données du composant vers le template projeté. Pattern très puissant pour les listes, tables, et composants itératifs.
 -->
+
+---
+layout: center
+class: text-center
+---
+
+# Votre avis compte !
+
+<img src="/img/qr-code.png" class="w-64 mx-auto" />
+
+<p class="text-sm mt-4 opacity-75">Scannez pour donner votre feedback (30 secondes)</p>
 
 ---
 layout: end
