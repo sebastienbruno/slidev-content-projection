@@ -94,13 +94,13 @@ Equipes Angular cross-produits
 - Maintenables à long terme
 - Évolutifs selon les besoins métier
 
-<v-click>
+<div v-click class="mt-10">
 
 ## Solution
 
 **--> Design System**
 
-</v-click>
+</div>
 
 
 <!--
@@ -184,15 +184,11 @@ graph TB
     style F3 fill:#48bb78,color:#fff
 ```
 
-<v-click>
-
-<div class="mt-8 p-4 bg-blue-50 rounded">
+<div v-click class="mt-8 p-4 bg-blue-50 rounded">
 
 **Notre objectif :** Créer un composant `CustomButton` réutilisable dans nos 3 features
 
 </div>
-
-</v-click>
 
 <!--
 Structure classique : une couche de composants partagés utilisée par plusieurs features. Le challenge : maintenir cette couche stable malgré des besoins divergents.
@@ -911,7 +907,6 @@ layout: default
 ```
 </v-click>
 
-
 </div>
 
 <style>
@@ -976,7 +971,7 @@ layout: default
 
 ### Composant Header
 
-```typescript
+```typescript {3|5-6|8|all}{at:1}
   template: `
     <div class="card-header">
       <ng-content select="[slot='avatar'], app-card-avatar, [appCardAvatar], [app-card-avatar]" />
@@ -991,7 +986,7 @@ layout: default
 ### Utilisation
 <div class="flex flex-row justify-between gap-6">
 <div>
-```html
+```html {2|3-4|5|all}{at:1}
 <app-card-header>
   <img slot="avatar" src="shiba.jpg" />
   <h3 slot="title">Shiba Inu</h3>
@@ -1002,7 +997,7 @@ layout: default
 </div>
 <div>
 
-```html
+```html {2|3-4|5|all}{at:1}
 <app-card-header>
   <app-card-avatar src="shiba.jpg" />
   <app-card-title>Shiba Inu</app-card-title>
@@ -1010,7 +1005,9 @@ layout: default
   <span>⭐ Featured</span>
 </app-card-header>
 ```
+
 </div>
+
 </div>
 
 </div>
@@ -1023,63 +1020,23 @@ Multi-slot projection : permet de définir plusieurs zones où le contenu peut �
 layout: default
 ---
 
-# Pattern avancé : ng-template + Context
+# Autres Patterns avancés
 
-<div class="grid grid-cols-2 gap-6">
+### 📖 **Pour aller plus loin :**
 
-<div>
+- Documentation officielle Angular.dev
+- Projection de contenu conditionnelle
+- Projection de contenu par défaut (Fallback) 
+- Alasing avec ngProjectAs
+- Re-projection
 
-### Composant
+<v-click>
 
-```typescript
-@Component({
-  template: `
-    <div class="list">
-      @for (item of items(); track item.id) {
-        <ng-container
-          *ngTemplateOutlet="
-            itemTemplate();
-            context: { $implicit: item }
-          "
-        />
-      }
-    </div>
-  `
-})
-export class List<T> {
-  items = input.required<T[]>();
-  itemTemplate = contentChild
-    .required(TemplateRef);
-}
-```
-
+<div class="mt-6 text-xl text-center text-blue-400">
+  Les bases sont posées... <p class="font-bold animate-pulse">Un prochain talk pour explorer ces concepts avancés ?</p>
 </div>
 
-<div>
-
-### Utilisation
-
-```html
-<app-list [items]="users">
-  <ng-template let-user>
-    <app-user-card [user]="user" />
-  </ng-template>
-</app-list>
-```
-
-<div class="mt-6 p-4 bg-purple-50 rounded text-sm">
-
-📖 **Pour aller plus loin :**
-
-- `contentChild` / `contentChildren` pour interagir avec le contenu projeté
-- Projection conditionnelle avec `*ngTemplateOutlet`
-
-</div>
-
-</div>
-
-</div>
-
+</v-click>
 <!--
 ng-template avec context : permet de passer des données du composant vers le template projeté. Pattern très puissant pour les listes, tables, et composants itératifs.
 -->
