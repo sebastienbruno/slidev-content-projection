@@ -902,8 +902,9 @@ layout: default
 <v-click>
 ```html
 <ng-content 
-    select="[attributeSelector], tag-name-selector, .class-selector"
-/>
+    select="[attributeSelector], tag-name-selector, .class-selector" /> 
+
+<ng-content  select="[slot='slot-name']/>
 ```
 </v-click>
 
@@ -1025,8 +1026,8 @@ layout: default
 ### 📖 **Pour aller plus loin :**
 
 - Documentation officielle Angular.dev
-- Projection de contenu conditionnelle
 - Projection de contenu par défaut (Fallback) 
+- Projection de contenu conditionnelle (ngTemplateOutlet + Context)
 - Aliasing avec ngProjectAs
 - Re-projection
 
